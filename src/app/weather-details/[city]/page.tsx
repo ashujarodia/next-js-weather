@@ -44,16 +44,19 @@ const WeatherDetails = ({ params }: { params: { city: string } }) => {
 	const [unit, setUnit] = useState<'metric' | 'imperial'>('metric');
 
 	// Fetch weather data for the given city
-	const { data, isLoading, refetch } = useGetWeatherByCityNameQuery({ cityName: params.city, units: unit });
+	const { data, isLoading, refetch, isError } = useGetWeatherByCityNameQuery({ cityName: params.city, units: unit });
 
 	// Display loading spinner if data is still loading
-	if (!data && isLoading)
+	if (!data && isLoading) {
 		return (
 			<main className='min-h-screen bg-green10 pt-24 px-4'>
 				<LazyLoader />
 			</main>
 		);
-
+	}
+	if (isError) {
+		return <div className='mt-24 text-red-500 font-semibold text-xl text-center w-full'>Sorry, Weather details for selected city is not available</div>;
+	}
 	const weatherIcon = data?.weather[0].icon;
 	const backgroundImage = getBackgroundImage(weatherIcon!);
 
